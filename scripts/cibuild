@@ -1,0 +1,32 @@
+#! groovy
+
+// methods for build
+def buildContainer(String container, String buildContext) {
+    // specific steps for parallel container builds
+    node('docker') {
+        checkout scm
+        // new dockerBuild(container, buildContext)
+    }
+}
+
+
+// build starts here
+jobs = [:]
+stage('Create Container Schematic') {
+    // overdoing it?
+    try {
+        sh('docker run -v \${WORKSPACE}:/app/ jnbnyc/ci-architect:master')
+    } catch (Throwable e) {
+        sh('python ci/architect/main.py')
+    }
+}
+
+stage('Build Containers') {
+    schematic = readYaml(file: 'container-schematic.yaml')
+    schematic.each { container ->
+        container.registries.each { registry ->
+            jobs[container.name] = { buildContainer(String.format("%s/%s", registry, container.name), container.directory) }
+        }
+    }
+    parallel jobs
+}
