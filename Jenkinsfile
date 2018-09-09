@@ -1,4 +1,4 @@
-#! groovy
+#!groovy
 
 node('docker') {
   checkout scm

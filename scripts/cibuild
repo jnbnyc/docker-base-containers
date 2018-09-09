@@ -1,4 +1,4 @@
-#! groovy
+#!groovy
 
 // methods for build
 def buildContainer(String container, String buildContext) {
@@ -22,6 +22,7 @@ stage('Create Container Schematic') {
 }
 
 stage('Build Containers') {
+    sh('pwd; ls -l')
     schematic = readYaml(file: 'container-schematic.yaml')
     schematic.each { container ->
         container.registries.each { registry ->
