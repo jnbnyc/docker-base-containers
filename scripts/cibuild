@@ -23,7 +23,7 @@ stage('Create Container Schematic') {
 
 stage('Build Containers') {
     sh('pwd; ls -l')
-    schematic = readYaml(file: 'container-schematic.yaml')
+    schematic = readYaml(file: 'container-schematic.yml')
     schematic.each { container ->
         container.registries.each { registry ->
             jobs[container.name] = { buildContainer(String.format("%s/%s", registry, container.name), container.directory) }
